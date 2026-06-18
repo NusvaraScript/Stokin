@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('debt_payments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
+            $table->decimal('payment', 10, 2);
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }
