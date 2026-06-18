@@ -10,7 +10,6 @@ class Transaction extends Model
 {
     protected $fillable = [
         'customer_id',
-        'transaction_id',
         'total',
         'status',
         'amount_paid',
@@ -30,16 +29,6 @@ class Transaction extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
-    }
-
-    public function parentTransaction(): BelongsTo
-    {
-        return $this->belongsTo(Transaction::class, 'transaction_id');
-    }
-
-    public function childTransactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class, 'transaction_id');
     }
 
     public function items(): HasMany
