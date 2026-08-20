@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\DebtPayment;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,9 @@ class DebtPaymentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'transaction_id' => Transaction::factory()->hutang(),
+            'payment' => fake()->randomFloat(2, 10000, 100000),
+            'note' => fake()->optional()->sentence(),
         ];
     }
 }

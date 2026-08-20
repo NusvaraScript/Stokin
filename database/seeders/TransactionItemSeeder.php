@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Transaction;
+use App\Models\TransactionItem;
 use Illuminate\Database\Seeder;
 
 class TransactionItemSeeder extends Seeder
@@ -11,6 +13,10 @@ class TransactionItemSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Transaction::all()->each(function ($transaction) {
+            TransactionItem::factory()->count(fake()->numberBetween(1, 5))->create([
+                'transaction_id' => $transaction->id,
+            ]);
+        });
     }
 }

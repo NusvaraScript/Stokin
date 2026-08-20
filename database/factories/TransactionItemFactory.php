@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,8 +18,15 @@ class TransactionItemFactory extends Factory
      */
     public function definition(): array
     {
+        $price = fake()->randomFloat(2, 1000, 75000);
+        $quantity = fake()->numberBetween(1, 10);
+
         return [
-            //
+            'transaction_id' => Transaction::factory(),
+            'product_name' => fake()->word(),
+            'quantity' => $quantity,
+            'price' => $price,
+            'total' => $price * $quantity,
         ];
     }
 }

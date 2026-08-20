@@ -18,7 +18,9 @@ class ExpensesFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'category' => fake()->randomElement(['Operasional', 'Stok', 'Lainnya']),
+            'description' => fake()->sentence(),
+            'amount' => fake()->randomFloat(2, 1000, 50000),
         ];
     }
 }

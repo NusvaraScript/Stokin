@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\DebtPaymentFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DebtPayment extends Model
 {
+    /** @use HasFactory<DebtPaymentFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'transaction_id',
         'payment',
