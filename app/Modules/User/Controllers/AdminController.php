@@ -2,10 +2,10 @@
 
 namespace App\Modules\User\Controllers;
 
-class UserController
+class AdminController
 {
     public function index()
     {
-        return response()->json(['message' => 'User Controller']);
+        return response()->json(['message' => 'Admin Controller']);
     }
 }
