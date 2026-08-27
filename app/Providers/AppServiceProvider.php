@@ -29,7 +29,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Passport::tokensCan([
+            'admin' => 'Akses Admin',
+            'user' => 'Akses User',
+            ]);
         Passport::enablePasswordGrant();
     }
 }

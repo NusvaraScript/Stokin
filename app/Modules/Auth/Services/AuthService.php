@@ -15,7 +15,7 @@ class AuthService
         $this->authRepository = $authRepository;
     }
 
-    public function login(array $credentials)
+    public function login(array $credentials): array
     {
         $user = $this->authRepository->findByEmail($credentials['email']);
 
@@ -35,5 +35,37 @@ class AuthService
             'token' => $token,
             'role' => $user->role,
         ];
+    }
+
+    public function register(array $data): array
+    {   
+        $user = $this->authRepository->create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'user',
+        ]);
+
+        $scope = $user->role === 'admin' ? ['admin'] : ['user'];
+
+        $token = $user->createToken('auth_token', $scope)->accessToken;
+
+        return [
+            'user' => $user,
+            'message' => 'Registrasi berhasil. Silakan login untuk melanjutkan',
+            'token_type' => 'Bearer',
+            'token' => $token,
+            'role' => $user->role,
+        ];
+    }
+
+    public function logout(): bool {
+        $user = auth('api')->user();
+
+        if (!$user || !$user->token()) {
+            return false;
+        }
+
+        return $user->token()->revoke();
     }
 }
