@@ -6,17 +6,20 @@ use App\Modules\Auth\Contracts\AuthRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class AuthService {
+class AuthService
+{
     protected AuthRepositoryInterface $authRepository;
 
-    public function __construct(AuthRepositoryInterface $authRepository) {
+    public function __construct(AuthRepositoryInterface $authRepository)
+    {
         $this->authRepository = $authRepository;
     }
 
-    public function login(array $credentials) {
+    public function login(array $credentials)
+    {
         $user = $this->authRepository->findByEmail($credentials['email']);
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Kredensial yang diberikan tidak valid.'],
             ]);
@@ -29,7 +32,7 @@ class AuthService {
         return [
             'user' => $user,
             'token_type' => 'Bearer',
-            'token' => $token->accessToken,
+            'token' => $token,
             'role' => $user->role,
         ];
     }
