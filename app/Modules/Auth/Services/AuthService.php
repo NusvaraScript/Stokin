@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Services;
 
 use App\Modules\Auth\Contracts\AuthRepositoryInterface;
+use Laravel\Passport\Token;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -61,11 +62,12 @@ class AuthService
 
     public function logout(): bool {
         $user = auth('api')->user();
+        $token = $user?->token();
 
-        if (!$user || !$user->token()) {
+        if (!$token instanceof Token) {
             return false;
         }
 
-        return $user->token()->revoke();
+        return $token->revoke();
     }
 }
