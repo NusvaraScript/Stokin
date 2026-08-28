@@ -7,8 +7,8 @@ use App\Modules\Auth\Controllers\AuthController;
 // Auth Endpoints
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::get('/user', [AuthController::class, 'user'])->name('user');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/user', [AuthController::class, 'user'])->name('user');
 
 Route::get('/user', function (Request $request) {
     return $request->user();
