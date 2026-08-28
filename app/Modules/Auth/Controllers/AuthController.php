@@ -3,22 +3,27 @@
 namespace App\Modules\Auth\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Modules\Auth\Requests\LoginRequest;
+use App\Modules\Auth\Requests\RegisterRequest;
+use App\Modules\Auth\Resources\AuthResource;
 use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     protected AuthService $authService;
 
-    public function __construct(AuthService $authService) {
+    public function __construct(AuthService $authService)
+    {
         $this->authService = $authService;
     }
 
-    public function user(): JsonResponse {
+    public function user(): JsonResponse
+    {
         $user = Auth::guard('api')->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Token tidak valid.',
@@ -27,43 +32,43 @@ class AuthController extends Controller {
 
         return response()->json([
             'status' => 'success',
-            'data' => $user,
+            'data' => new AuthResource($user),
         ]);
     }
 
-    public function login(Request $request): JsonResponse {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-        $result = $this->authService->login($credentials);
+    public function login(LoginRequest $request): JsonResponse
+    {
+        $data = $this->authService->login($request->validated());
+        $data = [
+            ...$data,
+            'user' => new AuthResource($data['user']),
+        ];
 
         return response()->json([
             'status' => 'success',
             'message' => 'Login berhasil.',
-            'data' => $result,
+            'data' => $data,
         ], 200);
     }
 
-    public function register(Request $request): JsonResponse {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $result = $this->authService->register($data);
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $data = $this->authService->register($request->validated());
+        $data = [
+            ...$data,
+            'user' => new AuthResource($data['user']),
+        ];
 
         return response()->json([
             'status' => 'success',
             'message' => 'Registrasi berhasil. Silakan login untuk melanjutkan',
-            'data' => $result,
+            'data' => $data,
         ], 201);
     }
 
-    public function logout(Request $request): JsonResponse {
-        if (!$this->authService->logout()) {
+    public function logout(): JsonResponse
+    {
+        if (! $this->authService->logout()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Tidak ada token yang dapat di hapus atau token tidak valid.',
